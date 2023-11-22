@@ -1,0 +1,30 @@
+  var divsConAlerta = [];
+
+  var urlSonido = "https://raw.githubusercontent.com/csfs2/script/main/aviso.mp3";
+  var alarmaAudio = new Audio(urlSonido);
+
+  function comprobarValores() {
+    var divs = document.querySelectorAll('.ng-star-inserted');
+
+    divs.forEach(function(div) {
+      var valorElement = div.querySelector('[data-test="value"]');
+
+      if (valorElement) {
+        var valor = parseFloat(valorElement.textContent.trim());
+
+        // RANGO DE PRECIO POR EL QUE FILTRA
+        // AHORA ESTRE 100 Y 10000
+
+        if (valor >= 100 && valor <= 10000 && divsConAlerta.indexOf(div) === -1) {
+          alarmaAudio.play();
+          console.log(valor);
+          divsConAlerta.push(div);
+        }
+      }
+    });
+  }
+
+  // CADA CUANTO COMPRUEBA LA PAGINA
+  // 1 SEGUNDO = 1000
+
+  setInterval(comprobarValores, 5000);
