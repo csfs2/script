@@ -1,30 +1,113 @@
   var divsConAlerta = [];
 
-  var urlSonido = "https://raw.githubusercontent.com/csfs2/script/main/aviso.mp3";
-  var alarmaAudio = new Audio(urlSonido);
-
   function comprobarValores() {
-    var divs = document.querySelectorAll('.ng-star-inserted');
+
+    var divs = document.querySelectorAll('.ng-star-inserted .ng-star-inserted .grid.ng-star-inserted .ng-star-inserted');
 
     divs.forEach(function(div) {
-      var valorElement = div.querySelector('[data-test="value"]');
 
-      if (valorElement) {
-        var valor = parseFloat(valorElement.textContent.trim());
-
-        // RANGO DE PRECIO POR EL QUE FILTRA
-        // AHORA ESTRE 100 Y 10000
-
-        if (valor >= 100 && valor <= 10000 && divsConAlerta.indexOf(div) === -1) {
-          alarmaAudio.play();
-          console.log(valor);
-          divsConAlerta.push(div);
-        }
+      if(div.tagName.toLocaleLowerCase() !== 'div') {
+        return;
       }
+
+      var wearElement = div.querySelector('.wear.fs-10.fw-600.lh-16.ng-star-inserted');
+
+      if(wearElement) {
+
+        var valorElement = div.querySelector('[data-test="value"]');
+
+        if (valorElement) {
+
+          var valor = parseFloat(valorElement.textContent.trim());
+  
+          // RANGO DE PRECIO POR EL QUE FILTRA
+          // AHORA ESTA ENTRE 100 Y 10000
+          //            v               v
+          if (valor >= 10 && valor <= 10000 && divsConAlerta.indexOf(div) === -1) {
+
+            console.log(div);
+
+            var label = div.querySelector('label[data-test="item-name"]');
+            var nombre = label.innerText.trim();
+            var fotoDiv = div.querySelector('[class="item-img"]');
+
+            var foto = fotoDiv ? fotoDiv.src : null;
+
+            var wearTexto = wearElement.innerHTML;
+            var parts = wearTexto.split("<!----><!---->- ");
+            var parts2 = parts[1].trim();
+            var baba = parts2.split('<!----><!---->');
+            var estado = parts[0].trim(); 
+            var float = baba[0].trim(); 
+
+            divsConAlerta.push(div);
+
+            buenFloat(estado, float, nombre, foto, div);
+
+          }
+        }
+
+      }
+
     });
+  }
+
+  function buenFloat(e, f, nombre, foto, div) {
+
+    var max, min, r, p, estado, float;
+
+    if(e == 'FN') {
+      estado = 'Factory New';
+      max = 0.07;
+      min = 0.00;
+    }
+
+    if(e == 'MW') {
+      estado = 'Minimal Wear';
+      max = 0.15;
+      min = 0.07;
+    }
+
+    if(e == 'FT') {
+      estado = 'Field Tested';
+      max = 0.38;
+      min = 0.15;
+    }
+
+    if(e == 'WW') {
+      estado = 'Well Worn';
+      max = 0.45;
+      min = 0.38;
+    }
+
+    if(e == 'BS') {
+      estado = 'Battle Scarred';
+      max = 1.00;
+      min = 0.45;
+    }
+
+    p = (100*(f-min))/(max-min);
+    r = p.toFixed(2);
+    float = (100 - r).toFixed(2);
+
+    // PORCENTAJE MINIMO DE FLOAT PARA QUE ENVIE NOTIFICACION
+    //          v
+    if(float >= 5){
+      var notificacion = new Notification(nombre, {
+        icon: foto,
+        body: "Estado: " + estado + " " + float + " %",
+      });
+
+      notificacion.onclick = function () {
+        window.focus();
+      };
+    }
+
   }
 
   // CADA CUANTO COMPRUEBA LA PAGINA
   // 1 SEGUNDO = 1000
+  //                              v
+  setInterval(comprobarValores, 2000);
 
-  setInterval(comprobarValores, 5000);
+  
