@@ -1,27 +1,29 @@
+
 calculo();
 
 function calculo() {
+    var coinsActual = 131;
+    var coinsInicial = 131;
 
-    var coins = 700;
+    for (var i = 0; i < 100; i++) {
+        var apuesta = 0.01;
 
-    var semanas = 27;
+        coinsActual = parseFloat(coinsActual.toFixed(2));
+        apuesta = parseFloat(apuesta.toFixed(2));
 
-    for (let i = 0; i < semanas; i++) {
 
-        coins = coins * 1.03;
-
-        if ((i === 4) || (i === 8) || (i === 12) || (i === 16) || (i === 20) || (i === 24)) {
-            coins = coins + 100;
+        while (((coinsActual - apuesta) + (apuesta * 14)) <= coinsInicial.toFixed(2)) {
+            apuesta += 0.01;
         }
 
-        if (i === 7) {
-            coins = coins + 200;
-        }
+        coinsActual -= apuesta;
 
-        console.log("Semana: " + i + " / Coins: " + coins);
+        // Simular la ruleta solo en la última ronda
+        var ma = parseFloat(coinsActual.toFixed(2));
+        var aa = parseFloat((apuesta * 14).toFixed(2));
+        var ganancia = (ma + aa);
+
+        console.log("Ronda " + (i + 1) + ": Apuesta = " + apuesta.toFixed(2) + ", Monedas restantes = " + coinsActual.toFixed(2) + ", Ganancias = " + ganancia);
 
     }
-
-    console.log(coins); 
-
 }
