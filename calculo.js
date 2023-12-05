@@ -2,8 +2,8 @@
 calculo();
 
 function calculo() {
-    var coinsActual = 131;
-    var coinsInicial = 131;
+    var coinsActual = 10;
+    var coinsInicial = 10;
 
     for (var i = 0; i < 100; i++) {
         var apuesta = 0.01;
@@ -12,7 +12,7 @@ function calculo() {
         apuesta = parseFloat(apuesta.toFixed(2));
 
 
-        while (((coinsActual - apuesta) + (apuesta * 14)) <= coinsInicial.toFixed(2)) {
+        while (((coinsActual - apuesta) + (apuesta * 14)) <= (coinsInicial) ) {
             apuesta += 0.01;
         }
 
